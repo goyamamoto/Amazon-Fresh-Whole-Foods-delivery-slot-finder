@@ -1,5 +1,7 @@
--- VARIABLE DEFINITIONS
+-- Configurable vaialbles
 set quickmode to false
+set defaultPhoneNumber to ""
+-- VARIABLE DEFINITIONS
 set found_slot to false
 set oos_keyword to "We're sorry we are unable to fulfill your entire order"
 set oos_msg to "click 'continue' on out of stock page before closing this dialog box"
@@ -60,7 +62,7 @@ Post any concerns/feedback on GitHub issue page"
 -- Text Messaging variables
 set promptForNumber to true
 set sendTexts to false
-set phoneNumber to ""
+set phoneNumber to defaultPhoneNumber
 set dialogResult to false
 set sendTextsPromptMsg to "Would you like to receive text messages when delivery slots appear?
 Note: If you haven't previously used your Mac's 'Messages' app to send or receive texts, select 'No'"
@@ -306,8 +308,7 @@ if javascriptEnabled then
 				-- Credit for fill to screen: https://macosxautomation.com/applescript/firsttutorial/18.html
 				tell application "System Events"
 					tell application "Finder" to get the bounds of the window of the desktop
-					tell application "Safari" to set the bounds of the front window to Â
-						{0, 22, (3rd item of the result), (4th item of the result)}
+					tell application "Safari" to set the bounds of the front window to {0, 22, (3rd item of the result), (4th item of the result)}
 				end tell
 			end tell
 			
