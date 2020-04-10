@@ -1,5 +1,5 @@
 -- VARIABLE DEFINITIONS
-
+set quickmode to true
 set found_slot to false
 set oos_keyword to "We're sorry we are unable to fulfill your entire order"
 set oos_msg to "click 'continue' on out of stock page before closing this dialog box"
@@ -120,7 +120,9 @@ end restartCheckout
 
 -- USER PROMPTS:
 -- 1. Welcome message w/ instructions & disclaimer
-display dialog welcomeMsg with title "Welcome" with icon stop buttons {"Cancel", "Continue"} default button "Continue"
+if quickmode = false then
+	display dialog welcomeMsg with title "Welcome" with icon stop buttons {"Cancel", "Continue"} default button "Continue"
+end if
 
 -- 2. Prompt whether to ignore oos or wait for user to review
 display dialog ignoreOosPromptMsg buttons {"Cancel", "A. Keep looking for slots", "B. Wait for me to review"} default button "A. Keep looking for slots" with title "Ignore Out Of Stock?" with icon note
@@ -131,8 +133,12 @@ else if result = {button returned:"B. Wait for me to review"} then
 	set auto_ignore_oos to false
 end if
 
-display dialog javascriptPermissionMsg with title "More access needed" buttons {"End Script", "Done"} with icon stop default button "Done"
-if result = {button returned:"Done"} then
+if quickmode = false then
+	display dialog javascriptPermissionMsg with title "More access needed" buttons {"End Script", "Done"} with icon stop default button "Done"
+	if result = {button returned:"Done"} then
+		set javascriptEnabled to true
+	end if
+else
 	set javascriptEnabled to true
 end if
 
@@ -160,7 +166,7 @@ if javascriptEnabled then
 		--set temp to file ("System:Applications:Messages.app:Contents:Resources:MessagesAppIcon.icns")
 		if button returned of dialogResult = "Yes" then
 			try
-				set theResponse to display dialog promptNumberMsg default answer "" with icon note buttons {"Cancel", "Continue"} default button "Continue" with title "Recipient Phone Number"
+				set theResponse to display dialog promptNumberMsg default answer phoneNumber with icon note buttons {"Cancel", "Continue"} default button "Continue" with title "Recipient Phone Number"
 				if button returned of theResponse = "Continue" then
 					set temp to text returned of theResponse
 					-- checks if proper format entered
@@ -202,8 +208,9 @@ if javascriptEnabled then
 		set selected_cart_url to fresh_cart_url
 	end if
 	
-	display dialog configCompleteMsg buttons {"Cancel", "Continue"} with title "Configuration Complete" with icon note default button "Continue"
-	
+	if quickmode = false then
+		display dialog configCompleteMsg buttons {"Cancel", "Continue"} with title "Configuration Complete" with icon note default button "Continue"
+	end if
 	
 	-- START SEARCH
 	-- create new empty window, with one empty tab
